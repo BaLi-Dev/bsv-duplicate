@@ -1,12 +1,8 @@
 import pytest
-
+from unittest.mock import patch
 from src.util.detector import detect_duplicates
 
 # develop your test cases here
-
-@pytest.mark.unit
-def test_detect_duplicates():
-    assert True
 
 @pytest.mark.unit
 def test_detect_duplicates_with_1_entry():
@@ -21,11 +17,13 @@ def test_detect_duplicates_with_1_entry():
 	  doi={10.1007/s00766-023-00405-y}
     }
     '''
-    with pytest.raises(ValueError):
-        duplicates = detect_duplicates(data)
+    with patch('src.util.detector.parse') as mock_parse:
+        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        with pytest.raises(ValueError):
+            duplicates = detect_duplicates(data)
 
 @pytest.mark.unit
-def test_detect_duplicates_same_doi_and_key():
+def test_detect_duplicates_same_doi_same_key():
     data = '''
     @article{frattini2023requirements,
         title={Requirements quality research: a harmonized theory, evaluation, and roadmap},
@@ -47,8 +45,10 @@ def test_detect_duplicates_same_doi_and_key():
         doi={10.1007/s00766-023-00405-y}
     }
     '''
-    duplicates = detect_duplicates(data)
-    assert len(duplicates) == 1
+    with patch('src.util.detector.parse') as mock_parse:
+        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        duplicates = detect_duplicates(data)
+        assert len(duplicates) == 1
 
 @pytest.mark.unit
 def test_detect_duplicates_same_doi_different_key():
@@ -73,8 +73,10 @@ def test_detect_duplicates_same_doi_different_key():
         doi={10.1007/s00766-023-00405-y}
     }
     '''
-    duplicates = detect_duplicates(data)
-    assert len(duplicates) == 0
+    with patch('src.util.detector.parse') as mock_parse:
+        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {key: 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
+        duplicates = detect_duplicates(data)
+        assert len(duplicates) == 0
 
 @pytest.mark.unit
 def test_detect_duplicates_missing_doi_same_key():
@@ -99,8 +101,10 @@ def test_detect_duplicates_missing_doi_same_key():
         doi={10.1007/s00766-023-00405-y}
     }
     '''
-    duplicates = detect_duplicates(data)
-    assert len(duplicates) == 1
+    with patch('src.util.detector.parse') as mock_parse:
+        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': ''}, {key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        duplicates = detect_duplicates(data)
+        assert len(duplicates) == 1
 
 @pytest.mark.unit
 def test_detect_duplicates_missing_doi_different_key():
@@ -125,5 +129,13 @@ def test_detect_duplicates_missing_doi_different_key():
         doi={10.1007/s00766-023-00405-y}
     }
     '''
-    duplicates = detect_duplicates(data)
-    assert len(duplicates) == 0
+    with patch('src.util.detector.parse') as mock_parse:
+        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': ''}, {key: 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
+        duplicates = detect_duplicates(data)
+        assert len(duplicates) == 0
+
+
+# When structuring the test cases, I started with testig the case of a single entry, which should raise a ValueError. Then I tested the cases with two entries, checking for duplicates based on both DOI and key. I also included cases where one entry had missing a DOI to ensure that the function correctly identifies duplicates in those scenarios. Each test case asserts the expected number of duplicates found.
+# I ensured test independece by making sure that each test case is self-contained and does not rely on the results of other tests. This way, they can be run in any order without affecting the outcomes.
+# There were no challenged faced when implementing these test cases. The first test case fails, as the logit to check for if the list contains more than 1 entry is faulty.
+
