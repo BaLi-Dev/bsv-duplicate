@@ -18,7 +18,7 @@ def test_detect_duplicates_with_1_entry():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        mock_parse.return_value = [{'key': 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
         with pytest.raises(ValueError):
             duplicates = detect_duplicates(data)
 
@@ -46,7 +46,7 @@ def test_detect_duplicates_same_doi_same_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        mock_parse.return_value = [{'key': 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {'key': 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
         duplicates = detect_duplicates(data)
         assert len(duplicates) == 1
 
@@ -74,7 +74,7 @@ def test_detect_duplicates_same_doi_different_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {key: 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
+        mock_parse.return_value = [{'key': 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}, {'key': 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
         duplicates = detect_duplicates(data)
         assert len(duplicates) == 0
 
@@ -102,7 +102,7 @@ def test_detect_duplicates_missing_doi_same_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': ''}, {key: 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
+        mock_parse.return_value = [{'key': 'frattini2023requirements', 'doi': ''}, {'key': 'frattini2023requirements', 'doi': '10.1007/s00766-023-00405-y'}]
         duplicates = detect_duplicates(data)
         assert len(duplicates) == 1
 
@@ -130,7 +130,7 @@ def test_detect_duplicates_missing_doi_different_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        mock_parse.return_value = [{key: 'frattini2023requirements', 'doi': ''}, {key: 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
+        mock_parse.return_value = [{'key': 'frattini2023requirements', 'doi': ''}, {'key': 'testkey', 'doi': '10.1007/s00766-023-00405-y'}]
         duplicates = detect_duplicates(data)
         assert len(duplicates) == 0
 
