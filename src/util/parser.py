@@ -32,6 +32,6 @@ def parse(data: str) -> list[Article]:
             if 'doi' in line:
                 doi = line.split('=')[1].strip().replace('{', '').replace('}', '').replace(',', '')
                 
-        articles.append(Article(key))
+        articles.append(Article(key=key, doi=doi))
 
     return articles
