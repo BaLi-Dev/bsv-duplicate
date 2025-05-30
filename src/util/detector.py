@@ -13,7 +13,7 @@ def detect_duplicates(data: str) -> list[Article]:
     """
     articles: list[Article] = parse(data)
     
-    if len(articles) < 2:
+    if len(articles) < 1:
         raise ValueError("The input data does not contain enough articles to detect duplicates.")
 
     duplicates: list[Article] = []

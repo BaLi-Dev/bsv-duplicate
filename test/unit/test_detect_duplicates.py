@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch
 from src.util.detector import detect_duplicates
+from src.util.parser import Article
 
 # develop your test cases here
 
@@ -18,7 +19,6 @@ def test_detect_duplicates_with_1_entry():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        from src.util.parser import Article
         mock_parse.return_value = [Article(key='frattini2023requirements', doi='10.1007/s00766-023-00405-y')]
         with pytest.raises(ValueError):
             duplicates = detect_duplicates(data)
@@ -47,7 +47,6 @@ def test_detect_duplicates_same_doi_same_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        from src.util.parser import Article
         mock_parse.return_value = [
             Article(key='frattini2023requirements', doi='10.1007/s00766-023-00405-y'), 
             Article(key='frattini2023requirements', doi='10.1007/s00766-023-00405-y')
@@ -79,7 +78,6 @@ def test_detect_duplicates_same_doi_different_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        from src.util.parser import Article
         mock_parse.return_value = [
             Article(key='frattini2023requirements', doi='10.1007/s00766-023-00405-y'), 
             Article(key='testkey', doi='10.1007/s00766-023-00405-y')
@@ -111,7 +109,6 @@ def test_detect_duplicates_missing_doi_same_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        from src.util.parser import Article
         mock_parse.return_value = [
             Article(key='frattini2023requirements', doi=None), 
             Article(key='frattini2023requirements', doi='10.1007/s00766-023-00405-y')
@@ -143,7 +140,6 @@ def test_detect_duplicates_missing_doi_different_key():
     }
     '''
     with patch('src.util.detector.parse') as mock_parse:
-        from src.util.parser import Article
         mock_parse.return_value = [
             Article(key='frattini2023requirements', doi=None), 
             Article(key='testkey', doi='10.1007/s00766-023-00405-y')
