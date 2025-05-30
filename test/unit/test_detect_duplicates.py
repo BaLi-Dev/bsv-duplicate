@@ -21,5 +21,5 @@ def test_detect_duplicates_with_1_entry():
 	  doi={10.1007/s00766-023-00405-y}
     }
     '''
-    duplicates = detect_duplicates(data)
-    assert len(duplicates) == 0
+    with pytest.raises(ValueError):
+        duplicates = detect_duplicates(data)
